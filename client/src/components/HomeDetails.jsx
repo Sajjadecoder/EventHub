@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Link } from "react-router-dom"
 
 export default function HomeDetails() {
   const features = [
@@ -92,14 +93,20 @@ export default function HomeDetails() {
               size="lg"
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             >
+            <Link to={'/register'}>
               Get Started Free
+            </Link>
+            
+            
             </Button>
             <Button
               variant="outline"
               size="lg"
               className="border-2 border-gray-300 hover:border-purple-500 text-gray-700 hover:text-purple-600 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200"
             >
+              <Link to={'/events'}>
               Browse Events
+              </Link>
             </Button>
           </div>
         </div>
@@ -226,7 +233,9 @@ export default function HomeDetails() {
               size="lg"
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             >
+              <Link to={'/register'} >
               Sign Up Now
+              </Link>
             </Button>
             <Button
               variant="outline"

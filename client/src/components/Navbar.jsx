@@ -158,12 +158,7 @@ export default function Navbar() {
                   </DropdownMenuItem>
                   {user.role === "admin" && (
                     <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="cursor-pointer">
-                        <a href="/admin-dashboard" className="w-full">
-                          Admin Dashboard
-                        </a>
-                      </DropdownMenuItem>
+                      
                       <DropdownMenuItem className="cursor-pointer">
                         <a href="/user-management" className="w-full">
                           User Management

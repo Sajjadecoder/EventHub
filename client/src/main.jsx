@@ -9,6 +9,8 @@ import { RouterProvider } from 'react-router'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import AllEvents from './pages/AllEvents'
+import CreateEvent from './pages/CreateEvent'
+import ManageEvents from './pages/ManageEvents'
 
 const route  = createBrowserRouter([
   {
@@ -28,6 +30,14 @@ const route  = createBrowserRouter([
   {
     path: '/events',
     element: <AllEvents />
+  },
+  {
+    path: '/create-event',
+    element: <CreateEvent />
+  },
+  {
+    path: "/manage-events",
+    element: <ManageEvents />
   }
 ])
 
