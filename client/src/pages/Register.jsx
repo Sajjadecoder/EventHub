@@ -5,19 +5,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input.jsx"
 import { Label } from "@/components/ui/label.jsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.jsx"
-import { Eye, EyeOff, User, Shield, Mail, Phone, Lock, UserPlus, Key } from "lucide-react"
+import { Eye, EyeOff, User, Shield, Mail, Lock, UserPlus, Key } from "lucide-react"
 import { useState } from "react"
+import axios from "axios"
 import ADMIN_SECRET_KEY from "@/assets/secretKey.js"
 import '../App.css'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 export default function Register() {
+    const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [selectedRole, setSelectedRole] = useState("")
     const [formData, setFormData] = useState({
         name: "",
         email: "",
-        phone: "",
         password: "",
         confirmPassword: "",
         role: "",
@@ -55,9 +56,9 @@ export default function Register() {
         if (!formData.name.trim()) {
             newErrors.name = "Name is required"
         }
-        
-        if (formData.name.length>10) {
-            newErrors.name = "Name should have less than 10 characters"
+
+        if (formData.name.length > 20) {
+            newErrors.name = "Name should have less than 20 characters"
         }
 
         if (!formData.email.trim()) {
@@ -66,11 +67,7 @@ export default function Register() {
             newErrors.email = "Email is invalid"
         }
 
-        if (!formData.phone.trim()) {
-            newErrors.phone = "Phone number is required"
-        } else if (!/^\+?[\d\s-()]+$/.test(formData.phone)) {
-            newErrors.phone = "Phone number is invalid"
-        }
+
 
         if (!formData.password) {
             newErrors.password = "Password is required"
@@ -100,23 +97,32 @@ export default function Register() {
         return Object.keys(newErrors).length === 0
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-
         if (validateForm()) {
             // Handle signup logic here
             console.log("Signup data:", {
                 name: formData.name,
                 email: formData.email,
-                phone: formData.phone,
                 role: formData.role,
-                // Don't log the actual password and secret key in production
                 passwordProvided: !!formData.password,
                 secretKeyProvided: !!formData.secretKey,
             })
+            const payload = {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+                role: formData.role,
+            };
+            try {
+                const res = await axios.post("http://localhost:3000/api/auth/register", payload, {
+                    withCredentials: true
+                });
 
-            // Reset form or redirect user
-            alert("Account created successfully!")
+                navigate('/login');
+            } catch (error) {
+                alert("Registration failed: " + error.response?.data?.message || error.message);
+            }
         }
     }
 
@@ -156,8 +162,8 @@ export default function Register() {
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     className={`pl-10 h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.name
-                                            ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                                            : "border-gray-200 hover:border-gray-300"
+                                        ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
+                                        : "border-gray-200 hover:border-gray-300"
                                         }`}
                                 />
                             </div>
@@ -184,8 +190,8 @@ export default function Register() {
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     className={`pl-10 h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.email
-                                            ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                                            : "border-gray-200 hover:border-gray-300"
+                                        ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
+                                        : "border-gray-200 hover:border-gray-300"
                                         }`}
                                 />
                             </div>
@@ -197,33 +203,7 @@ export default function Register() {
                             )}
                         </div>
 
-                        {/* Phone Field */}
-                        <div className="space-y-2">
-                            <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
-                                Phone Number
-                            </Label>
-                            <div className="relative group">
-                                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-purple-500 transition-colors" />
-                                <Input
-                                    id="phone"
-                                    name="phone"
-                                    type="tel"
-                                    placeholder="Enter your phone number"
-                                    value={formData.phone}
-                                    onChange={handleInputChange}
-                                    className={`pl-10 h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.phone
-                                            ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                                            : "border-gray-200 hover:border-gray-300"
-                                        }`}
-                                />
-                            </div>
-                            {errors.phone && (
-                                <p className="text-sm text-red-500 flex items-center gap-1 animate-in slide-in-from-left-1">
-                                    <span className="w-1 h-1 bg-red-500 rounded-full"></span>
-                                    {errors.phone}
-                                </p>
-                            )}
-                        </div>
+
 
                         {/* Role Selection */}
                         <div className="space-y-2">
@@ -286,8 +266,8 @@ export default function Register() {
                                         value={formData.secretKey}
                                         onChange={handleInputChange}
                                         className={`pl-10 h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.secretKey
-                                                ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                                                : "border-gray-200 hover:border-gray-300"
+                                            ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
+                                            : "border-gray-200 hover:border-gray-300"
                                             }`}
                                     />
                                 </div>
@@ -321,8 +301,8 @@ export default function Register() {
                                     value={formData.password}
                                     onChange={handleInputChange}
                                     className={`pl-10 pr-12 h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.password
-                                            ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                                            : "border-gray-200 hover:border-gray-300"
+                                        ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
+                                        : "border-gray-200 hover:border-gray-300"
                                         }`}
                                 />
                                 <button
@@ -356,8 +336,8 @@ export default function Register() {
                                     value={formData.confirmPassword}
                                     onChange={handleInputChange}
                                     className={`pl-10 pr-12 h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.confirmPassword
-                                            ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                                            : "border-gray-200 hover:border-gray-300"
+                                        ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
+                                        : "border-gray-200 hover:border-gray-300"
                                         }`}
                                 />
                                 <button

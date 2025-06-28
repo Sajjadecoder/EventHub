@@ -8,33 +8,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { Link, useNavigate } from "react-router-dom"
 
 export default function Navbar() {
-  // Mock user state - replace with actual auth state
-  const [user, setUser] = useState(null) // null for guest, object for authenticated user
+  const [user, setUser] = useState(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const navigate = useNavigate()
 
-  // Mock user data - replace with actual user data from your auth system
-  // const user = {
-  //   name: "John Doe",
-  //   email: "john@example.com",
-  //   role: "admin" // or "user"
-  // }
-
-  const handleLogin = () => {
-    // Mock login - replace with actual login logic
-    setUser({
-      name: "John Doe",
-      email: "john@example.com",
-      role: "admin", // Change to "admin" to see admin features
-    })
-  }
+  // Load user from localStorage when component mounts
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user")
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+  }, [])
+  useEffect(() => {
+    console.log("User is: ",user)
+  }, [user])
 
   const handleLogout = () => {
+    localStorage.removeItem("user")
     setUser(null)
-    setIsMobileMenuOpen(false)
+    localStorage.removeItem("user")
+    localStorage.removeItem("accessToken")
+    navigate("/") // Optionally redirect to home after logout
   }
 
   const toggleMobileMenu = () => {
@@ -45,85 +43,65 @@ export default function Navbar() {
     <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo/Brand */}
+          {/* Logo */}
           <div className="flex items-center">
-            <a href="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">E</span>
               </div>
               <span className="text-xl font-bold text-gray-900">EventHub</span>
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {/* Public Navigation */}
-            <a
-              href="/events"
+            <Link
+              to="/events"
               className="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
             >
               Browse Events
-            </a>
+            </Link>
 
-            {/* Authenticated User Navigation */}
             {user && (
               <>
-                <a
-                  href="/my-bookings"
-                  className="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-                >
+                <Link to="/my-bookings" className="nav-link">
                   My Bookings
-                </a>
-                <a
-                  href="/create-event"
-                  className="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-                >
+                </Link>
+                <Link to="/create-event" className="nav-link">
                   Create Event
-                </a>
+                </Link>
 
-                {/* Admin/Event Creator Navigation */}
                 {(user.role === "admin" || user.role === "event_creator") && (
-                  <a
-                    href="/manage-events"
-                    className="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-                  >
+                  <Link to="/manage-events" className="nav-link">
                     Manage Events
-                  </a>
+                  </Link>
                 )}
 
-                {/* Admin Only Navigation */}
                 {user.role === "admin" && (
-                  <a
-                    href="/admin-dashboard"
-                    className="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-                  >
+                  <Link to="/admin-dashboard" className="nav-link">
                     Admin Panel
-                  </a>
+                  </Link>
                 )}
               </>
             )}
           </div>
 
-          {/* User Authentication Section */}
+          {/* Auth Section */}
           <div className="hidden md:flex items-center space-x-4">
             {!user ? (
-              // Guest User Buttons
-              <div className="flex items-center space-x-3">
-                <Button
-                  variant="ghost"
-                  className="text-gray-700 hover:text-purple-600 hover:bg-purple-50"
-                  onClick={handleLogin}
-                >
-                  Sign In
-                </Button>
-                <Link to={'/register'}>
-                <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-                  Sign Up
-                </Button>
+              <>
+                <Link to="/login">
+                  <Button variant="ghost" className="text-gray-700 hover:text-purple-600 hover:bg-purple-50">
+                    Sign In
+                  </Button>
                 </Link>
-              </div>
+                <Link to="/register">
+                  <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
             ) : (
-              // Authenticated User Dropdown
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2 hover:bg-gray-100">
@@ -141,33 +119,22 @@ export default function Navbar() {
                     <p className="text-xs text-purple-600 font-medium capitalize">{user.role}</p>
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer">
-                    <a href="/profile" className="w-full">
-                      Profile Settings
-                    </a>
+                  <DropdownMenuItem>
+                    <Link to="/profile" className="w-full">Profile Settings</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer">
-                    <a href="/my-bookings" className="w-full">
-                      My Bookings
-                    </a>
+                  <DropdownMenuItem>
+                    <Link to="/my-bookings" className="w-full">My Bookings</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer">
-                    <a href="/my-events" className="w-full">
-                      My Events
-                    </a>
+                  <DropdownMenuItem>
+                    <Link to="/my-events" className="w-full">My Events</Link>
                   </DropdownMenuItem>
                   {user.role === "admin" && (
-                    <>
-                      
-                      <DropdownMenuItem className="cursor-pointer">
-                        <a href="/user-management" className="w-full">
-                          User Management
-                        </a>
-                      </DropdownMenuItem>
-                    </>
+                    <DropdownMenuItem>
+                      <Link to="/user-management" className="w-full">User Management</Link>
+                    </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600" onClick={handleLogout}>
+                  <DropdownMenuItem className="text-red-600" onClick={handleLogout}>
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -175,14 +142,9 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Toggle */}
           <div className="md:hidden">
-            <Button
-              variant="ghost"
-              className="text-gray-700 hover:text-purple-600 hover:bg-gray-100"
-              onClick={toggleMobileMenu}
-            >
-              <span className="sr-only">Open main menu</span>
+            <Button variant="ghost" onClick={toggleMobileMenu}>
               {isMobileMenuOpen ? <span className="text-xl">✕</span> : <span className="text-xl">☰</span>}
             </Button>
           </div>
@@ -192,103 +154,44 @@ export default function Navbar() {
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {/* Public Navigation */}
-              <a
-                href="/events"
-                className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-md text-base font-medium transition-colors duration-200"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Browse Events
-              </a>
+              <Link to="/events" className="mobile-link" onClick={toggleMobileMenu}>Browse Events</Link>
 
-              {/* Authenticated User Navigation */}
               {user && (
                 <>
-                  <Link
-                    href="/my-bookings"
-                    className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-md text-base font-medium transition-colors duration-200"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    My Bookings
-                  </Link>
-                  <Link
-                    href="/create-event"
-                    className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-md text-base font-medium transition-colors duration-200"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Create Event
-                  </Link>
-                  <Link
-                    href="/my-events"
-                    className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-md text-base font-medium transition-colors duration-200"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    My Events
-                  </Link>
+                  <Link to="/my-bookings" className="mobile-link" onClick={toggleMobileMenu}>My Bookings</Link>
+                  <Link to="/create-event" className="mobile-link" onClick={toggleMobileMenu}>Create Event</Link>
+                  <Link to="/my-events" className="mobile-link" onClick={toggleMobileMenu}>My Events</Link>
 
-                  {/* Admin/Event Creator Navigation */}
                   {(user.role === "admin" || user.role === "event_creator") && (
-                    <a
-                      href="/manage-events"
-                      className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-md text-base font-medium transition-colors duration-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Manage Events
-                    </a>
+                    <Link to="/manage-events" className="mobile-link" onClick={toggleMobileMenu}>Manage Events</Link>
                   )}
 
-                  {/* Admin Only Navigation */}
                   {user.role === "admin" && (
                     <>
-                      <a
-                        href="/admin-dashboard"
-                        className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-md text-base font-medium transition-colors duration-200"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Admin Panel
-                      </a>
-                      <a
-                        href="/user-management"
-                        className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-md text-base font-medium transition-colors duration-200"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        User Management
-                      </a>
+                      <Link to="/admin-dashboard" className="mobile-link" onClick={toggleMobileMenu}>Admin Panel</Link>
+                      <Link to="/user-management" className="mobile-link" onClick={toggleMobileMenu}>User Management</Link>
                     </>
                   )}
 
                   <div className="border-t border-gray-200 pt-2 mt-2">
-                    <a
-                      href="/profile"
-                      className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-md text-base font-medium transition-colors duration-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Profile Settings
-                    </a>
+                    <Link to="/profile" className="mobile-link" onClick={toggleMobileMenu}>Profile Settings</Link>
                   </div>
                 </>
               )}
 
-              {/* Authentication Section */}
               <div className="border-t border-gray-200 pt-4 mt-4">
                 {!user ? (
                   <div className="space-y-2">
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-gray-700 hover:text-purple-600 hover:bg-purple-50"
-                      onClick={() => {
-                        handleLogin()
-                        setIsMobileMenuOpen(false)
-                      }}
-                    >
-                      Sign In
-                    </Button>
-                    <Button
-                      className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Sign Up
-                    </Button>
+                    <Link to="/login">
+                      <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-purple-600 hover:bg-purple-50">
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+                        Sign Up
+                      </Button>
+                    </Link>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -300,7 +203,10 @@ export default function Navbar() {
                     <Button
                       variant="ghost"
                       className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
-                      onClick={handleLogout}
+                      onClick={() => {
+                        handleLogout()
+                        setIsMobileMenuOpen(false)
+                      }}
                     >
                       Sign Out
                     </Button>

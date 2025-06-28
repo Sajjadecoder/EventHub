@@ -5,20 +5,43 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input.jsx"
 import { Label } from "@/components/ui/label.jsx"
 import { Eye, EyeOff } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import '../App.css'
-import { Link } from "react-router-dom"
+import axios from "axios"
+import { Link, useNavigate } from "react-router-dom"
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
-
-  const handleSubmit = (e) => {
+  const navigate = useNavigate()
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const email = formData.get("email")
     const password = formData.get("password")
+    if (!email || !password) {
+      alert("Enter full credentials")
+    } else {
+      console.log("Login attempt:", { email, password })
+      const payload = {
+        email,
+        password
+      }
+      try {
+        const res = await axios.post("http://localhost:3000/api/auth/login", payload, { withCredentials: true });
 
-    // Handle login logic here
-    console.log("Login attempt:", { email, password })
+        const { accessToken, user } = res.data;
+
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        navigate("/");
+
+        navigate('/');
+      } catch (error) {
+        const message = error.response?.data?.message || error.message || "Something went wrong";
+        alert("Login failed: " + message);
+      }
+
+    }
   }
 
   return (
@@ -54,17 +77,7 @@ export default function Login() {
                 </button>
               </div>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <input type="checkbox" id="remember" className="rounded border-gray-300" />
-                <Label htmlFor="remember" className="text-sm text-gray-600">
-                  Remember me
-                </Label>
-              </div>
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                Forgot password?
-              </a>
-            </div>
+
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full">
