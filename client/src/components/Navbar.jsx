@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import axios from "axios"
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 
@@ -16,23 +17,34 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const navigate = useNavigate()
 
-  // Load user from localStorage when component mounts
   useEffect(() => {
     const storedUser = localStorage.getItem("user")
     if (storedUser) {
       setUser(JSON.parse(storedUser))
     }
   }, [])
-  useEffect(() => {
-    console.log("User is: ",user)
-  }, [user])
 
-  const handleLogout = () => {
-    localStorage.removeItem("user")
-    setUser(null)
-    localStorage.removeItem("user")
-    localStorage.removeItem("accessToken")
-    navigate("/") // Optionally redirect to home after logout
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:3000/api/auth/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+          withCredentials: true,
+        }
+      )
+
+      setUser(null)
+      localStorage.removeItem("user")
+      localStorage.removeItem("accessToken")
+      navigate("/")
+    } catch (error) {
+      console.error("Logout failed:", error.response?.data || error.message)
+      alert("Logout failed.")
+    }
   }
 
   const toggleMobileMenu = () => {
@@ -40,7 +52,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-gray-900 shadow-lg border-b border-gray-800 sticky top-0 z-50 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -49,7 +61,7 @@ export default function Navbar() {
               <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">E</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">EventHub</span>
+              <span className="text-xl font-bold text-white">EventHub</span>
             </Link>
           </div>
 
@@ -57,28 +69,30 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               to="/events"
-              className="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+              className="text-gray-300 hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
             >
               Browse Events
             </Link>
 
             {user && (
               <>
-                <Link to="/my-bookings" className="nav-link">
+                <Link to="/my-bookings" className="text-gray-300 hover:text-purple-400">
                   My Bookings
-                </Link>
-                <Link to="/create-event" className="nav-link">
-                  Create Event
                 </Link>
 
                 {(user.role === "admin" || user.role === "event_creator") && (
-                  <Link to="/manage-events" className="nav-link">
-                    Manage Events
-                  </Link>
+                  <>
+                    <Link to="/create-event" className="text-gray-300 hover:text-purple-400">
+                      Create Event
+                    </Link>
+                    <Link to="/manage-events" className="text-gray-300 hover:text-purple-400">
+                      Manage Events
+                    </Link>
+                  </>
                 )}
 
                 {user.role === "admin" && (
-                  <Link to="/admin-dashboard" className="nav-link">
+                  <Link to="/admin-dashboard" className="text-gray-300 hover:text-purple-400">
                     Admin Panel
                   </Link>
                 )}
@@ -91,7 +105,7 @@ export default function Navbar() {
             {!user ? (
               <>
                 <Link to="/login">
-                  <Button variant="ghost" className="text-gray-700 hover:text-purple-600 hover:bg-purple-50">
+                  <Button variant="ghost" className="text-gray-300 hover:text-purple-400 hover:bg-gray-800">
                     Sign In
                   </Button>
                 </Link>
@@ -104,21 +118,21 @@ export default function Navbar() {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center space-x-2 hover:bg-gray-100">
+                  <Button variant="ghost" className="flex items-center space-x-2 hover:bg-gray-800">
                     <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
                       <span className="text-white text-sm font-medium">{user.name.charAt(0).toUpperCase()}</span>
                     </div>
-                    <span className="text-gray-700 font-medium">{user.name}</span>
+                    <span className="text-white font-medium">{user.name}</span>
                     <span className="text-gray-400">▼</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-56 bg-gray-800 text-white border border-gray-700">
                   <div className="px-3 py-2">
-                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                    <p className="text-xs text-gray-500">{user.email}</p>
-                    <p className="text-xs text-purple-600 font-medium capitalize">{user.role}</p>
+                    <p className="text-sm font-medium text-white">{user.name}</p>
+                    <p className="text-xs text-gray-400">{user.email}</p>
+                    <p className="text-xs text-purple-400 font-medium capitalize">{user.role}</p>
                   </div>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="bg-gray-600" />
                   <DropdownMenuItem>
                     <Link to="/profile" className="w-full">Profile Settings</Link>
                   </DropdownMenuItem>
@@ -133,8 +147,8 @@ export default function Navbar() {
                       <Link to="/user-management" className="w-full">User Management</Link>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-red-600" onClick={handleLogout}>
+                  <DropdownMenuSeparator className="bg-gray-600" />
+                  <DropdownMenuItem className="text-red-500 hover:bg-red-600/10" onClick={handleLogout}>
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -142,7 +156,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Toggle */}
           <div className="md:hidden">
             <Button variant="ghost" onClick={toggleMobileMenu}>
               {isMobileMenuOpen ? <span className="text-xl">✕</span> : <span className="text-xl">☰</span>}
@@ -152,38 +166,40 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 bg-white">
+          <div className="md:hidden border-t border-gray-700 bg-gray-900 text-white">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <Link to="/events" className="mobile-link" onClick={toggleMobileMenu}>Browse Events</Link>
+              <Link to="/events" className="block px-3 py-2 rounded-md hover:bg-gray-800" onClick={toggleMobileMenu}>
+                Browse Events
+              </Link>
 
               {user && (
                 <>
-                  <Link to="/my-bookings" className="mobile-link" onClick={toggleMobileMenu}>My Bookings</Link>
-                  <Link to="/create-event" className="mobile-link" onClick={toggleMobileMenu}>Create Event</Link>
-                  <Link to="/my-events" className="mobile-link" onClick={toggleMobileMenu}>My Events</Link>
+                  <Link to="/my-bookings" className="block px-3 py-2 rounded-md hover:bg-gray-800" onClick={toggleMobileMenu}>My Bookings</Link>
+                  <Link to="/create-event" className="block px-3 py-2 rounded-md hover:bg-gray-800" onClick={toggleMobileMenu}>Create Event</Link>
+                  <Link to="/my-events" className="block px-3 py-2 rounded-md hover:bg-gray-800" onClick={toggleMobileMenu}>My Events</Link>
 
                   {(user.role === "admin" || user.role === "event_creator") && (
-                    <Link to="/manage-events" className="mobile-link" onClick={toggleMobileMenu}>Manage Events</Link>
+                    <Link to="/manage-events" className="block px-3 py-2 rounded-md hover:bg-gray-800" onClick={toggleMobileMenu}>Manage Events</Link>
                   )}
 
                   {user.role === "admin" && (
                     <>
-                      <Link to="/admin-dashboard" className="mobile-link" onClick={toggleMobileMenu}>Admin Panel</Link>
-                      <Link to="/user-management" className="mobile-link" onClick={toggleMobileMenu}>User Management</Link>
+                      <Link to="/admin-dashboard" className="block px-3 py-2 rounded-md hover:bg-gray-800" onClick={toggleMobileMenu}>Admin Panel</Link>
+                      <Link to="/user-management" className="block px-3 py-2 rounded-md hover:bg-gray-800" onClick={toggleMobileMenu}>User Management</Link>
                     </>
                   )}
 
-                  <div className="border-t border-gray-200 pt-2 mt-2">
-                    <Link to="/profile" className="mobile-link" onClick={toggleMobileMenu}>Profile Settings</Link>
+                  <div className="border-t border-gray-700 pt-2 mt-2">
+                    <Link to="/profile" className="block px-3 py-2 hover:bg-gray-800" onClick={toggleMobileMenu}>Profile Settings</Link>
                   </div>
                 </>
               )}
 
-              <div className="border-t border-gray-200 pt-4 mt-4">
+              <div className="border-t border-gray-700 pt-4 mt-4">
                 {!user ? (
                   <div className="space-y-2">
                     <Link to="/login">
-                      <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-purple-600 hover:bg-purple-50">
+                      <Button variant="ghost" className="w-full justify-start text-gray-300 hover:text-purple-400 hover:bg-gray-800">
                         Sign In
                       </Button>
                     </Link>
@@ -195,14 +211,14 @@ export default function Navbar() {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    <div className="px-3 py-2 border-b border-gray-200">
-                      <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                      <p className="text-xs text-gray-500">{user.email}</p>
-                      <p className="text-xs text-purple-600 font-medium capitalize">{user.role}</p>
+                    <div className="px-3 py-2 border-b border-gray-700">
+                      <p className="text-sm font-medium text-white">{user.name}</p>
+                      <p className="text-xs text-gray-400">{user.email}</p>
+                      <p className="text-xs text-purple-400 font-medium capitalize">{user.role}</p>
                     </div>
                     <Button
                       variant="ghost"
-                      className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-900/20"
                       onClick={() => {
                         handleLogout()
                         setIsMobileMenuOpen(false)

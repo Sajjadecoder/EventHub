@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState,useEffect, useMemo } from "react"
 import { techEvents, entertainmentEvents, educationEvents, healthEvents } from "@/eventsData.js"
 import EventCard from "@/components/EventCard"
+import axios from "axios"
 import Navbar from "@/components/Navbar"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,7 +18,11 @@ import { ChevronDown, Filter } from "lucide-react"
 function AllEvents() {
   const [categoryFilter, setCategoryFilter] = useState("all")
   const [locationFilter, setLocationFilter] = useState("all")
-
+  
+    const [techEvents, setTechEvents] = useState([]);
+    const [healthEvents, setHealthEvents] = useState([]);
+    const [entertainmentEvents, setEntertainmentEvents] = useState([]);
+    const [educationEvents, setEducationEvents] = useState([]);
   // Combine all events with their categories
   const allEvents = useMemo(() => {
     return [
@@ -65,6 +70,43 @@ function AllEvents() {
     setCategoryFilter("all")
     setLocationFilter("all")
   }
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const techRes = await axios.get("http://localhost:3000/api/users/get-tech-events");
+        setTechEvents(techRes.data.events);
+        console.log(techRes)
+      } catch (error) {
+        console.error("Error fetching tech events:", error);
+      }
+      
+      try {
+        const healthRes = await axios.get("http://localhost:3000/api/users/get-health-events");
+        setHealthEvents(healthRes.data.events);
+        console.log(healthRes)
+      } catch (error) {
+        console.error("Error fetching health events:", error);
+      }
+      
+      try {
+        const eduRes = await axios.get("http://localhost:3000/api/users/get-education-events");
+        setEducationEvents(eduRes.data.events);
+        console.log(eduRes)
+      } catch (error) {
+        console.error("Error fetching education events:", error);
+      }
+      
+      try {
+        const entertainmentRes = await axios.get("http://localhost:3000/api/users/get-entertainment-events");
+        setEntertainmentEvents(entertainmentRes.data.events);
+        console.log(entertainmentRes)
+      } catch (error) {
+        console.error("Error fetching entertainment events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const hasActiveFilters = categoryFilter !== "all" || locationFilter !== "all"
 
@@ -149,11 +191,11 @@ function AllEvents() {
         ) : (
           <>
             {/* Tech Events */}
-            {groupedEvents.Tech.length > 0 && (
+            {techEvents.length > 0 && (
               <>
                 <h1 className="text-2xl font-bold px-4 pt-4">Tech Events</h1>
                 <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
-                  {groupedEvents.Tech.map((event, index) => (
+                  {techEvents.map((event, index) => (
                     <EventCard key={`tech-${index}`} event={event} />
                   ))}
                 </div>
@@ -161,11 +203,11 @@ function AllEvents() {
             )}
 
             {/* Entertainment Events */}
-            {groupedEvents.Entertainment.length > 0 && (
+            {entertainmentEvents.length > 0 && (
               <>
                 <h1 className="text-2xl font-bold px-4 pt-4">Entertainment Events</h1>
                 <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
-                  {groupedEvents.Entertainment.map((event, index) => (
+                  {entertainmentEvents.map((event, index) => (
                     <EventCard key={`entertainment-${index}`} event={event} />
                   ))}
                 </div>
@@ -173,11 +215,11 @@ function AllEvents() {
             )}
 
             {/* Education Events */}
-            {groupedEvents.Education.length > 0 && (
+            {educationEvents.length > 0 && (
               <>
                 <h1 className="text-2xl font-bold px-4 pt-4">Education Events</h1>
                 <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
-                  {groupedEvents.Education.map((event, index) => (
+                  {educationEvents.map((event, index) => (
                     <EventCard key={`education-${index}`} event={event} />
                   ))}
                 </div>
@@ -185,11 +227,11 @@ function AllEvents() {
             )}
 
             {/* Health Events */}
-            {groupedEvents.Health.length > 0 && (
+            {healthEvents.length > 0 && (
               <>
                 <h1 className="text-2xl font-bold px-4 pt-4">Health Events</h1>
                 <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
-                  {groupedEvents.Health.map((event, index) => (
+                  {healthEvents.map((event, index) => (
                     <EventCard key={`health-${index}`} event={event} />
                   ))}
                 </div>

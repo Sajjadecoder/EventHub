@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.routes.js' 
+import adminRouter from './routes/admin.routes.js' 
+import userRouter from './routes/user.routes.js' 
 const app = express();
 const port = 3000;
 import { pool } from './db/connectDB.js';
@@ -17,6 +19,8 @@ app.listen(port, () => {
 //routes 
 
 app.use('/api/auth',authRouter)
+app.use('/api/admin',adminRouter)
+app.use('/api/users',userRouter)
 
 
 

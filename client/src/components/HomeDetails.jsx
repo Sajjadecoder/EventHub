@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 export default function HomeDetails() {
@@ -41,22 +42,29 @@ export default function HomeDetails() {
       description: "Event organizers get detailed insights and analytics to make their events more successful.",
     },
   ]
+  const [user, setUser] = useState(null)
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user")
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+  }, [])
 
   const steps = [
     {
       step: "01",
       title: "Sign Up",
-      description: "Create your free account in less than a minute. Choose between user or organizer account.",
+      description: "Create your free account in less than a minute. Choose between User or Admin account.",
     },
     {
       step: "02",
       title: "Explore",
-      description: "Browse events by category, location, or date. Use filters to find exactly what you're looking for.",
+      description: "Browse events by category and location. Use filters to find exactly what you're looking for.",
     },
     {
       step: "03",
       title: "Book & Enjoy",
-      description: "Reserve your spot, make secure payment, and get ready for an amazing experience.",
+      description: "Reserve your spot, and get ready for an amazing experience.",
     },
   ]
 
@@ -68,58 +76,53 @@ export default function HomeDetails() {
   ]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black text-white">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 py-20 px-4 overflow-hidden">
-        {/* Background decorative elements */}
+      <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-black py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-800 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-800 rounded-full blur-3xl opacity-20 animate-pulse delay-1000"></div>
         </div>
 
         <div className="max-w-7xl mx-auto text-center relative z-10">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
             Discover Amazing
-            <span className="block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               Events Near You
             </span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
             EventHub is your gateway to incredible experiences. Whether you're looking to attend inspiring events or
             create memorable gatherings, we've got you covered with our comprehensive event management platform.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-            >
-            <Link to={'/register'}>
-              Get Started Free
-            </Link>
-            
-            
-            </Button>
+            {!user && (
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                <Link to={"/register"}>Get Started Free</Link>
+              </Button>
+            )}
             <Button
               variant="outline"
               size="lg"
-              className="border-2 border-gray-300 hover:border-purple-500 text-gray-700 hover:text-purple-600 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200"
+              className="bg-transparent border-2 border-gray-600 hover:border-purple-500 text-gray-100 hover:text-black px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200"
             >
-              <Link to={'/events'}>
-              Browse Events
-              </Link>
+              <Link to={"/events"}>Browse Events</Link>
             </Button>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-900">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">{stat.number}</div>
-                <div className="text-gray-600 font-medium">{stat.label}</div>
+                <div className="text-4xl md:text-5xl font-bold text-white mb-2">{stat.number}</div>
+                <div className="text-gray-400 font-medium">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -127,11 +130,11 @@ export default function HomeDetails() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-800">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose EventHub?</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold text-white mb-4">Why Choose EventHub?</h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               We provide everything you need to discover, book, and manage events seamlessly. Join thousands of users
               who trust EventHub for their event needs.
             </p>
@@ -139,13 +142,13 @@ export default function HomeDetails() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow duration-300 border-0 shadow-md">
+              <Card key={index} className="bg-gray-900 border border-gray-700 shadow-md hover:shadow-lg transition-shadow duration-300">
                 <CardHeader className="text-center pb-4">
                   <div className="text-4xl mb-4">{feature.icon}</div>
-                  <CardTitle className="text-xl font-bold text-gray-900">{feature.title}</CardTitle>
+                  <CardTitle className="text-xl font-bold text-white">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-gray-600 text-center leading-relaxed">
+                  <CardDescription className="text-gray-400 text-center leading-relaxed">
                     {feature.description}
                   </CardDescription>
                 </CardContent>
@@ -156,11 +159,11 @@ export default function HomeDetails() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-black">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold text-white mb-4">How It Works</h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
               Getting started with EventHub is simple. Follow these three easy steps to begin your event journey.
             </p>
           </div>
@@ -168,17 +171,16 @@ export default function HomeDetails() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map((step, index) => (
               <div key={index} className="text-center relative">
-                {/* Step connector line */}
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-12 left-1/2 w-full h-0.5 bg-gradient-to-r from-purple-300 to-blue-300 transform translate-x-1/2"></div>
+                  <div className="hidden md:block absolute top-12 left-1/2 w-full h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 transform translate-x-1/2"></div>
                 )}
 
-                <div className="relative z-10 bg-white">
-                  <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <div className="relative z-10">
+                  <div className="w-24 h-24 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                     <span className="text-2xl font-bold text-white">{step.step}</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.title}</h3>
-                  <p className="text-gray-600 leading-relaxed max-w-sm mx-auto">{step.description}</p>
+                  <h3 className="text-2xl font-bold text-white mb-4">{step.title}</h3>
+                  <p className="text-gray-400 leading-relaxed max-w-sm mx-auto">{step.description}</p>
                 </div>
               </div>
             ))}
@@ -186,8 +188,8 @@ export default function HomeDetails() {
         </div>
       </section>
 
-      {/* For Event Organizers Section */}
-      <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-600">
+      {/* Event Organizers Section */}
+      <section className="py-20 bg-gradient-to-r from-purple-700 to-blue-700">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold text-white mb-6">Are You an Event Organizer?</h2>
           <p className="text-xl text-purple-100 mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -202,54 +204,56 @@ export default function HomeDetails() {
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">📈</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Real-time Analytics</h3>
-              <p className="text-purple-100">Track registrations, sales, and engagement metrics</p>
+              <h3 className="text-xl font-semibold text-white mb-2">Real-time User management</h3>
+              <p className="text-purple-100">Track Users who have registered</p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">💰</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Secure Payments</h3>
-              <p className="text-purple-100">Accept payments safely with our integrated payment system</p>
+              <h3 className="text-xl font-semibold text-white mb-2">View Your Bookings</h3>
+              <p className="text-purple-100">Why only be an Admin when you can be an attendee as well</p>
             </div>
           </div>
-          <Button
-            size="lg"
-            className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-          >
-            Start Organizing Events
-          </Button>
+          {user?.role === "admin" && (
+            <Button
+              size="lg"
+              className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+            >
+              Start Organizing Events
+            </Button>
+          )}
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="max-w-4xl mx-auto text-center px-4">
-          <h2 className="text-4xl font-bold text-white mb-6">Ready to Get Started?</h2>
-          <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-            Join thousands of users who have already discovered amazing events and created unforgettable experiences.
-            Your next great adventure is just a click away.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-            >
-              <Link to={'/register'} >
-              Sign Up Now
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-2 border-gray-600 hover:border-white text-gray-300 hover:text-white hover:bg-white/10 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200"
-            >
-              Learn More
-            </Button>
+      {!user && (
+        <section className="py-20 bg-gray-900">
+          <div className="max-w-4xl mx-auto text-center px-4">
+            <h2 className="text-4xl font-bold text-white mb-6">Ready to Get Started?</h2>
+            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+              Join thousands of users who have already discovered amazing events and created unforgettable experiences.
+              Your next great adventure is just a click away.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                <Link to={"/register"}>Sign Up Now</Link>
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-2 border-gray-600 hover:border-white text-gray-300 hover:text-white hover:bg-white/10 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200"
+              >
+                Learn More
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Footer */}
-      <footer className="bg-gray-800 py-12">
+      <footer className="bg-black py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
@@ -267,51 +271,19 @@ export default function HomeDetails() {
             <div>
               <h3 className="text-white font-semibold mb-4">Platform</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Browse Events
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Create Event
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Help Center
-                  </a>
-                </li>
+                <li><a href="#" className="hover:text-white transition-colors">Browse Events</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Create Event</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
               </ul>
             </div>
             <div>
               <h3 className="text-white font-semibold mb-4">Company</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Terms of Service
-                  </a>
-                </li>
+                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
               </ul>
             </div>
           </div>

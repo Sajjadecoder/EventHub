@@ -11,6 +11,7 @@ import Home from './pages/Home'
 import AllEvents from './pages/AllEvents'
 import CreateEvent from './pages/CreateEvent'
 import ManageEvents from './pages/ManageEvents'
+import MyEvents from './pages/MyEvents'
 
 const route  = createBrowserRouter([
   {
@@ -38,6 +39,11 @@ const route  = createBrowserRouter([
   {
     path: "/manage-events",
     element: <ManageEvents />
+  }
+  ,
+  {
+    path: "/my-events",
+    element: <MyEvents />
   }
 ])
 
