@@ -69,7 +69,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               to="/events"
-              className="text-gray-300 hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+              className="text-gray-300 hover:text-purple-400 px-3 py-2 duration-200"
             >
               Browse Events
             </Link>
@@ -91,11 +91,6 @@ export default function Navbar() {
                   </>
                 )}
 
-                {user.role === "admin" && (
-                  <Link to="/admin-dashboard" className="text-gray-300 hover:text-purple-400">
-                    Admin Panel
-                  </Link>
-                )}
               </>
             )}
           </div>
@@ -148,7 +143,7 @@ export default function Navbar() {
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator className="bg-gray-600" />
-                  <DropdownMenuItem className="text-red-500 hover:bg-red-600/10" onClick={handleLogout}>
+                  <DropdownMenuItem className="text-red-500 font-bold hover:bg-red-600/10" onClick={handleLogout}>
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>

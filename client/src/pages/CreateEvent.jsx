@@ -166,14 +166,14 @@ export default function CreateEvent() {
         })
 
         // Reset form
-       
+
         alert("Event created successfully!")
         navigate('/my-events')
       } catch (error) {
         console.error("Error creating event:", error)
       } finally {
         setIsSubmitting(false)
-         setFormData({
+        setFormData({
           title: "",
           category: "",
           location: "",
@@ -199,121 +199,89 @@ export default function CreateEvent() {
     <>
       {user?.role === "admin" ?
 
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 py-6 px-4">
+        <div className="min-h-screen bg-gray-900 py-6 px-4 text-gray-200">
           <div className="max-w-2xl mx-auto">
-            <Card className="shadow-2xl border-0 ring-1 ring-gray-200/50 backdrop-blur-sm bg-white/95">
+            <Card className="shadow-2xl border border-gray-700 bg-gray-800">
               <CardHeader className="text-center pb-8">
-                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center mb-0 gap-0 shadow-lg">
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
                   <span className="text-3xl">🎪</span>
                 </div>
-                <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  Create New Event
-                </CardTitle>
-                <CardDescription className="text-gray-600 text-base">
+                <CardTitle className="text-3xl font-bold text-white">Create New Event</CardTitle>
+                <CardDescription className="text-gray-400 text-base">
                   Fill in the details below to create your amazing event
                 </CardDescription>
               </CardHeader>
 
               <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-6">
-                  {/* Event Title */}
-
+                  {/* Title */}
                   <div className="space-y-2">
-                    <Label htmlFor="title" className="text-sm font-semibold text-gray-700">
-                      Event Title *
-                    </Label>
-                    <div className="relative group">
+                    <Label htmlFor="title" className="text-sm font-semibold text-gray-300">Event Title *</Label>
+                    <div className="relative">
                       <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl">🎯</span>
                       <Input
                         id="title"
                         name="title"
-                        type="text"
-                        placeholder="Enter your event title"
                         value={formData.title}
                         onChange={handleInputChange}
-                        className={`pl-12 h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.title
-                          ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                          : "border-gray-200 hover:border-gray-300"
+                        placeholder="Enter your event title"
+                        className={`pl-12 h-12 bg-gray-700 text-white placeholder-gray-400 border-2 ${errors.title
+                          ? "border-red-400 focus:ring-red-500"
+                          : "border-gray-600 focus:ring-purple-500"
                           }`}
                       />
                     </div>
-                    {errors.title && (
-                      <p className="text-sm text-red-500 flex items-center gap-1 animate-in slide-in-from-left-1">
-                        <span className="w-1 h-1 bg-red-500 rounded-full"></span>
-                        {errors.title}
-                      </p>
-                    )}
+                    {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
                   </div>
 
-                  {/* Category Selection */}
+                  {/* Category */}
                   <div className="space-y-2">
-                    <Label htmlFor="category" className="text-sm font-semibold text-gray-700">
-                      Category *
-                    </Label>
-                    <Select onValueChange={handleCategoryChange} value={formData.category}>
+                    <Label htmlFor="category" className="text-sm font-semibold text-gray-300">Category *</Label>
+                    <Select value={formData.category} onValueChange={handleCategoryChange}>
                       <SelectTrigger
-                        className={`h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.category ? "border-red-400" : "border-gray-200 hover:border-gray-300"
+                        className={`h-12 bg-gray-700 text-white border-2 ${errors.category ? "border-red-400" : "border-gray-600"
                           }`}
                       >
                         <SelectValue placeholder="Choose event category" />
                       </SelectTrigger>
-                      <SelectContent className="border-2 border-gray-100 shadow-xl max-h-60">
+                      <SelectContent className="bg-gray-800 text-white border-gray-600">
                         {categories.map((category) => (
-                          <SelectItem
-                            key={category}
-                            value={category}
-                            className="cursor-pointer hover:bg-purple-50 focus:bg-purple-50"
-                          >
-                            <div className="flex items-center gap-3 py-1">
-                              <span className="text-lg">{getCategoryIcon(category)}</span>
-                              <span className="font-medium">{category}</span>
+                          <SelectItem key={category} value={category}>
+                            <div className="flex items-center gap-2">
+                              <span>{getCategoryIcon(category)}</span> {category}
                             </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    {errors.category && (
-                      <p className="text-sm text-red-500 flex items-center gap-1 animate-in slide-in-from-left-1">
-                        <span className="w-1 h-1 bg-red-500 rounded-full"></span>
-                        {errors.category}
-                      </p>
-                    )}
+                    {errors.category && <p className="text-sm text-red-500">{errors.category}</p>}
                   </div>
 
                   {/* Location */}
                   <div className="space-y-2">
-                    <Label htmlFor="location" className="text-sm font-semibold text-gray-700">
-                      Location *
-                    </Label>
-                    <div className="relative group">
+                    <Label htmlFor="location" className="text-sm font-semibold text-gray-300">Location *</Label>
+                    <div className="relative">
                       <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl">📍</span>
                       <Input
                         id="location"
                         name="location"
                         type="text"
-                        placeholder="Enter event location"
                         value={formData.location}
                         onChange={handleInputChange}
-                        className={`pl-12 h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.location
-                          ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                          : "border-gray-200 hover:border-gray-300"
+                        placeholder="Enter event location"
+                        className={`pl-12 h-12 bg-gray-700 text-white placeholder-gray-400 border-2 ${errors.location
+                          ? "border-red-400 focus:ring-red-500"
+                          : "border-gray-600 focus:ring-purple-500"
                           }`}
                       />
                     </div>
-                    {errors.location && (
-                      <p className="text-sm text-red-500 flex items-center gap-1 animate-in slide-in-from-left-1">
-                        <span className="w-1 h-1 bg-red-500 rounded-full"></span>
-                        {errors.location}
-                      </p>
-                    )}
+                    {errors.location && <p className="text-sm text-red-500">{errors.location}</p>}
                   </div>
 
-                  {/* Available Seats */}
+                  {/* Seats */}
                   <div className="space-y-2">
-                    <Label htmlFor="totalSeats" className="text-sm font-semibold text-gray-700">
-                      Available Seats *
-                    </Label>
-                    <div className="relative group">
+                    <Label htmlFor="totalSeats" className="text-sm font-semibold text-gray-300">Available Seats *</Label>
+                    <div className="relative">
                       <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl">🪑</span>
                       <Input
                         id="totalSeats"
@@ -321,29 +289,22 @@ export default function CreateEvent() {
                         type="number"
                         min="1"
                         max="10000"
-                        placeholder="Number of total available seats"
                         value={formData.totalSeats}
                         onChange={handleInputChange}
-                        className={`pl-12 h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.totalSeats
-                          ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                          : "border-gray-200 hover:border-gray-300"
+                        placeholder="Number of total available seats"
+                        className={`pl-12 h-12 bg-gray-700 text-white placeholder-gray-400 border-2 ${errors.totalSeats
+                          ? "border-red-400 focus:ring-red-500"
+                          : "border-gray-600 focus:ring-purple-500"
                           }`}
                       />
                     </div>
-                    {errors.totalSeats && (
-                      <p className="text-sm text-red-500 flex items-center gap-1 animate-in slide-in-from-left-1">
-                        <span className="w-1 h-1 bg-red-500 rounded-full"></span>
-                        {errors.totalSeats}
-                      </p>
-                    )}
+                    {errors.totalSeats && <p className="text-sm text-red-500">{errors.totalSeats}</p>}
                   </div>
 
-                  {/* Date and Time */}
+                  {/* Date & Time */}
                   <div className="space-y-2">
-                    <Label htmlFor="date" className="text-sm font-semibold text-gray-700">
-                      Event Date & Time *
-                    </Label>
-                    <div className="relative group">
+                    <Label htmlFor="date" className="text-sm font-semibold text-gray-300">Event Date & Time *</Label>
+                    <div className="relative">
                       <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl">📅</span>
                       <Input
                         id="date"
@@ -351,37 +312,29 @@ export default function CreateEvent() {
                         type="datetime-local"
                         value={formData.date}
                         onChange={handleInputChange}
-                        className={`pl-12 h-12 border-2 transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 ${errors.date
-                          ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                          : "border-gray-200 hover:border-gray-300"
+                        className={`pl-12 h-12 bg-gray-700 text-white placeholder-gray-400 border-2 ${errors.date
+                          ? "border-red-400 focus:ring-red-500"
+                          : "border-gray-600 focus:ring-purple-500"
                           }`}
                       />
                     </div>
-                    {errors.date && (
-                      <p className="text-sm text-red-500 flex items-center gap-1 animate-in slide-in-from-left-1">
-                        <span className="w-1 h-1 bg-red-500 rounded-full"></span>
-                        {errors.date}
-                      </p>
-                    )}
+                    {errors.date && <p className="text-sm text-red-500">{errors.date}</p>}
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="image" className="text-sm font-semibold text-gray-700">
-                      Event Image
-                    </Label>
 
+                  {/* Image Upload */}
+                  <div className="space-y-2">
+                    <Label htmlFor="image" className="text-sm font-semibold text-gray-300">Event Image</Label>
                     <div className="flex items-center gap-4">
                       <label
                         htmlFor="image"
-                        className="inline-block bg-gray-200 text-black px-4 py-2 text-sm font-medium rounded-md shadow-sm cursor-pointer hover:bg-gray-300 transition"
+                        className="inline-block bg-gray-700 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-gray-600"
                       >
                         Upload Image
                       </label>
-
                       {imageFile && (
-                        <span className="text-sm text-gray-600 truncate max-w-[200px]">{imageFile.name}</span>
+                        <span className="text-sm text-gray-400 truncate max-w-[200px]">{imageFile.name}</span>
                       )}
                     </div>
-
                     <Input
                       id="image"
                       name="image"
@@ -390,14 +343,13 @@ export default function CreateEvent() {
                       className="hidden"
                     />
                   </div>
-
                 </CardContent>
 
                 <CardContent className="pt-0 pb-8">
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full h-12 bg-gradient-to-r mt-5 from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 border-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="w-full h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl disabled:opacity-50"
                   >
                     {isSubmitting ? (
                       <div className="flex items-center gap-2">
@@ -406,13 +358,10 @@ export default function CreateEvent() {
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <span className="text-xl">🎪</span>
-                        Create Event
+                        <span className="text-xl">🎪</span> Create Event
                       </div>
                     )}
                   </Button>
-
-
                 </CardContent>
               </form>
             </Card>

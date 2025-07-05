@@ -1,7 +1,6 @@
 import { verifyAccessToken } from "../utils/jwt.js" // adjust path if needed
 
 const isLoggedIn = (req, res, next) => {
-  
     console.log("inside isLoggedIn")
     const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {

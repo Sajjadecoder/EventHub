@@ -1,3 +1,4 @@
+import UnauthorizedBox from "@/components/UnauthorizedBox";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
@@ -6,40 +7,49 @@ const MyEvents = () => {
   const [healthEvents, setHealthEvents] = useState([]);
   const [entertainmentEvents, setEntertainmentEvents] = useState([]);
   const [educationEvents, setEducationEvents] = useState([]);
+  const [user, setUser] = useState(null)
+ useEffect(() => {
+  const fetchEvents = async () => {
+    try {
+      const resp = localStorage.getItem("user");
+      const token = localStorage.getItem("accessToken");
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const techRes = await axios.get("http://localhost:3000/api/users/get-tech-events");
-        setTechEvents(techRes.data.events);
-      } catch (error) {
-        console.error("Error fetching tech events:", error);
-      }
+      if (!resp || !token) return;
 
-      try {
-        const healthRes = await axios.get("http://localhost:3000/api/users/get-health-events");
-        setHealthEvents(healthRes.data.events);
-      } catch (error) {
-        console.error("Error fetching health events:", error);
-      }
+      const parsedUser = JSON.parse(resp);
+      setUser(parsedUser);
+      console.log("User is:", parsedUser);
 
-      try {
-        const eduRes = await axios.get("http://localhost:3000/api/users/get-education-events");
-        setEducationEvents(eduRes.data.events);
-      } catch (error) {
-        console.error("Error fetching education events:", error);
-      }
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true, // Only if your backend sets/sends cookies
+        params: {
+          id: parsedUser.id,
+        },
+      };
 
-      try {
-        const entertainmentRes = await axios.get("http://localhost:3000/api/users/get-entertainment-events");
-        setEntertainmentEvents(entertainmentRes.data.events);
-      } catch (error) {
-        console.error("Error fetching entertainment events:", error);
-      }
-    };
+      const techRes = await axios.get("http://localhost:3000/api/admin/get-tech-events-created", config);
+      setTechEvents(techRes.data.events);
 
-    fetchEvents();
-  }, []);
+      const healthRes = await axios.get("http://localhost:3000/api/admin/get-health-events-created", config);
+      setHealthEvents(healthRes.data.events);
+
+      const eduRes = await axios.get("http://localhost:3000/api/admin/get-education-events-created", config);
+      setEducationEvents(eduRes.data.events);
+
+      const entertainmentRes = await axios.get("http://localhost:3000/api/admin/get-entertainment-events-created", config);
+      setEntertainmentEvents(entertainmentRes.data.events);
+
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
+  fetchEvents();
+}, []);
+
 
   const renderCard = (event, index) => (
     <div key={index} className="border border-gray-700 rounded-xl shadow-md bg-gray-800 overflow-hidden">
@@ -59,20 +69,22 @@ const MyEvents = () => {
   );
 
   return (
-    <div className="w-full bg-gray-900">
-  <div className="max-w-6xl mx-auto px-6">
-    <div className="max-w-6xl mx-auto p-6 bg-gray-900 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-center text-white">My Events</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-        {techEvents.length > 0 && techEvents.map(renderCard)}
-        {healthEvents.length > 0 && healthEvents.map(renderCard)}
-        {educationEvents.length > 0 && educationEvents.map(renderCard)}
-        {entertainmentEvents.length > 0 && entertainmentEvents.map(renderCard)}
+    <>
+      {user?.role === "admin" ? <div className="w-full bg-gray-900">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="max-w-6xl mx-auto p-6 bg-gray-900 min-h-screen">
+            <h1 className="text-3xl font-bold mb-6 text-center text-white">My Events</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+              {techEvents.length > 0 && techEvents.map(renderCard)}
+              {healthEvents.length > 0 && healthEvents.map(renderCard)}
+              {educationEvents.length > 0 && educationEvents.map(renderCard)}
+              {entertainmentEvents.length > 0 && entertainmentEvents.map(renderCard)}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-
+        : <UnauthorizedBox />}
+    </>
   );
 };
 
