@@ -55,8 +55,11 @@ export default function Navbar() {
     <nav className="bg-gray-900 shadow-lg border-b border-gray-800 sticky top-0 z-50 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
+          {/* Logo with Home Icon */}
+          <div className="flex items-center space-x-4">
+            <Link to="/" className="text-2xl hover:text-purple-400 transition-all duration-200">
+              🏠
+            </Link>
             <Link to="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">E</span>
@@ -80,17 +83,7 @@ export default function Navbar() {
                   My Bookings
                 </Link>
 
-                {(user.role === "admin" || user.role === "event_creator") && (
-                  <>
-                    <Link to="/create-event" className="text-gray-300 hover:text-purple-400">
-                      Create Event
-                    </Link>
-                    <Link to="/manage-events" className="text-gray-300 hover:text-purple-400">
-                      Manage Events
-                    </Link>
-                  </>
-                )}
-
+               
               </>
             )}
           </div>
@@ -128,18 +121,19 @@ export default function Navbar() {
                     <p className="text-xs text-purple-400 font-medium capitalize">{user.role}</p>
                   </div>
                   <DropdownMenuSeparator className="bg-gray-600" />
-                  <DropdownMenuItem>
-                    <Link to="/profile" className="w-full">Profile Settings</Link>
-                  </DropdownMenuItem>
+                  
                   <DropdownMenuItem>
                     <Link to="/my-bookings" className="w-full">My Bookings</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="/manage-events" className="w-full">Manage Events</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link to="/my-events" className="w-full">My Events</Link>
                   </DropdownMenuItem>
                   {user.role === "admin" && (
                     <DropdownMenuItem>
-                      <Link to="/user-management" className="w-full">User Management</Link>
+                      <Link to="/create-event" className="w-full">Create Event</Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator className="bg-gray-600" />

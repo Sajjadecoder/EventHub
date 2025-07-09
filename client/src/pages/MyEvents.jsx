@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar";
 import UnauthorizedBox from "@/components/UnauthorizedBox";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -32,15 +33,18 @@ const MyEvents = () => {
 
       const techRes = await axios.get("http://localhost:3000/api/admin/get-tech-events-created", config);
       setTechEvents(techRes.data.events);
-
+      console.log("tech: ",techRes.data.events)
       const healthRes = await axios.get("http://localhost:3000/api/admin/get-health-events-created", config);
       setHealthEvents(healthRes.data.events);
-
+      console.log("health: ",healthRes.data.events)
+      
       const eduRes = await axios.get("http://localhost:3000/api/admin/get-education-events-created", config);
       setEducationEvents(eduRes.data.events);
-
+      console.log("edu: ",eduRes.data.events)
+      
       const entertainmentRes = await axios.get("http://localhost:3000/api/admin/get-entertainment-events-created", config);
       setEntertainmentEvents(entertainmentRes.data.events);
+      console.log("Entert: ",entertainmentRes.data.events)
 
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -70,6 +74,7 @@ const MyEvents = () => {
 
   return (
     <>
+      <Navbar />
       {user?.role === "admin" ? <div className="w-full bg-gray-900">
         <div className="max-w-6xl mx-auto px-6">
           <div className="max-w-6xl mx-auto p-6 bg-gray-900 min-h-screen">

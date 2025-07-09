@@ -12,6 +12,7 @@ import AllEvents from './pages/AllEvents'
 import CreateEvent from './pages/CreateEvent'
 import ManageEvents from './pages/ManageEvents'
 import MyEvents from './pages/MyEvents'
+import MyBookings from './pages/MyBookings'
 
 const route  = createBrowserRouter([
   {
@@ -44,6 +45,11 @@ const route  = createBrowserRouter([
   {
     path: "/my-events",
     element: <MyEvents />
+  }
+  ,
+  {
+    path: "/my-bookings",
+    element: <MyBookings />
   }
 ])
 

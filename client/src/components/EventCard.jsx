@@ -2,9 +2,13 @@
 
 import { Card, CardContent } from "@/components/ui/card.jsx"
 import { Button } from "@/components/ui/button.jsx"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
 export default function EventCard({ event }) {
   const eventData = event
+  const [user, setUser] = useState(null)
+  const [isLoadingUser, setIsLoadingUser] = useState(true)
 
   const formatDate = (dateString) => {
     const date = new Date(dateString)
@@ -20,13 +24,55 @@ export default function EventCard({ event }) {
       hour12: true,
     })
   }
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user")
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+    setIsLoadingUser(false)
+
+
+  }, [])
+  useEffect(() => {
+    if (user) {
+      console.log("Event card user:", user)
+    }
+  }, [user])
+  const handleBooking = async (id) => {
+  try {
+    const payload = {
+      userID: user.id,
+      eventID: id
+    }
+
+    const result = await axios.post("http://localhost:3000/api/users/book-event", payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+      withCredentials: true,
+    })
+
+    if (result.status === 200) {
+      alert("🎉 Event booked successfully!")
+      console.log("Booking response:", result.data)
+    }
+  } catch (error) {
+    console.error("Booking failed:", error.response?.data || error.message)
+
+    if (error.response?.status === 409) {
+      alert("⚠️ You have already booked this event.")
+    } else if (error.response?.status === 403) {
+      alert("❌ No seats available.")
+    } else {
+      alert("Something went wrong while booking.")
+    }
+  }
+}
 
   const getCategoryColor = (category) => {
     const colors = {
       Tech: "bg-blue-800 text-blue-100",
-      Business: "bg-green-800 text-green-100",
-      Design: "bg-purple-800 text-purple-100",
-      Marketing: "bg-orange-800 text-orange-100",
+      Entertainment: "bg-orange-800 text-orange-100",
       Health: "bg-red-800 text-red-100",
       Education: "bg-indigo-800 text-indigo-100",
     }
@@ -80,12 +126,13 @@ export default function EventCard({ event }) {
 
         {/* Action Button */}
         <div className="pt-3">
-          <Button
+          {!isLoadingUser && user && <Button
             className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium py-2 rounded-lg transition-all duration-200"
             size="sm"
+            onClick={() => handleBooking(eventData.id)}
           >
             Book Now
-          </Button>
+          </Button>}
         </div>
       </CardContent>
     </Card>
