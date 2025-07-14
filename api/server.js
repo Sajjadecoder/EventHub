@@ -23,5 +23,17 @@ app.use(cors({
 app.use('/api/auth',authRouter)
 app.use('/api/admin',adminRouter)
 app.use('/api/users',userRouter)
+app.get("/", (req, res) => {
+  res.json("✅ Server is running");
+});
+
+// ✅ Error Handler (always at the end)
+app.use((error, req, res, next) => {
+  res.status(error.status || 500).json({
+    message: error.message || "Something went wrong",
+    status: error.status,
+    stack: error.stack,
+  });
+});
 
 export default app
