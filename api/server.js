@@ -15,15 +15,13 @@ app.use(cors({
     origin: frontendUrl,  // Frontend origin
     credentials: true,                
   }));
-app.listen(port, () => {
-  console.log(`Server is running at ${process.env.BACKEND_URL}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server is running at ${process.env.BACKEND_URL}`);
+// });
 //routes 
 
 app.use('/api/auth',authRouter)
 app.use('/api/admin',adminRouter)
 app.use('/api/users',userRouter)
 
-
-
-
+export default app
