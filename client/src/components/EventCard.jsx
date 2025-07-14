@@ -45,7 +45,10 @@ export default function EventCard({ event }) {
       eventID: id
     }
 
-    const result = await axios.post("http://localhost:3000/api/users/book-event", payload, {
+   const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+const result = await axios.post(`${backendUrl}/api/users/book-event`, payload, {
+
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

@@ -9,7 +9,7 @@ export default function MyBookings() {
   const [bookings, setBookings] = useState([])
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [selectedBooking, setSelectedBooking] = useState(null)
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     const resp = localStorage.getItem("user")
     if (resp) {
@@ -22,7 +22,7 @@ export default function MyBookings() {
 
     const fetchBookings = async () => {
       try {
-        const result = await axios.get("http://localhost:3000/api/users/get-bookings", {
+        const result = await axios.get(`${backendUrl}/api/users/get-bookings`, {
           params: { userID: currentUser.id },
         })
         setBookings(result.data.events)
@@ -68,7 +68,7 @@ export default function MyBookings() {
     setBookings(
       bookings.filter((b) => b.booking_id !== selectedBooking.booking_id)
     )
-    const result = await axios.delete("http://localhost:3000/api/users/cancel-booking",{params: {booking_id: selectedBooking.booking_id,user_id: currentUser.id  }})
+    const result = await axios.delete(`${backendUrl}/api/users/cancel-booking`,{params: {booking_id: selectedBooking.booking_id,user_id: currentUser.id  }})
     console.log(result)
     setShowCancelModal(false)
     setSelectedBooking(null)

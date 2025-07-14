@@ -148,8 +148,9 @@ export default function CreateEvent() {
 
       try {
         // Simulate API call
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
         const res = await axios.post(
-          "http://localhost:3000/api/admin/create-event",
+          `${backendUrl}/api/admin/create-event`,
           payload,
           {
             headers: {

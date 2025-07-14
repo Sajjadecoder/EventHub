@@ -70,22 +70,7 @@ export default function HomeDetails() {
       description:
         "Organize your own events and reach a wider audience. Complete event management tools at your fingertips.",
     },
-    {
-      icon: "👥",
-      title: "Community",
-      description:
-        "Connect with like-minded people, share experiences, and build lasting relationships through events.",
-    },
-    {
-      icon: "🔒",
-      title: "Secure Platform",
-      description: "Your data and payments are protected with enterprise-grade security. Book with confidence.",
-    },
-    {
-      icon: "📊",
-      title: "Analytics",
-      description: "Event organizers get detailed insights and analytics to make their events more successful.",
-    },
+    
   ]
 
   const [user, setUser] = useState(null)

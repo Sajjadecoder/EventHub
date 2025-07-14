@@ -24,13 +24,14 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const email = formData.get("email")
     const password = formData.get("password")
     if (!email || !password) {
       alert("Enter full credentials")
     } else {
       try {
-        const res = await axios.post("http://localhost:3000/api/auth/login", {
+        const res = await axios.post(`${backendUrl}/api/auth/login`, {
           email,
           password,
         }, { withCredentials: true })

@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { techEvents, entertainmentEvents, educationEvents, healthEvents } from "@/eventsData.js"
-import EventCard from "@/components/EventCard"
+import { motion } from "framer-motion"
 import axios from "axios"
 import Navbar from "@/components/Navbar"
+import EventCard from "@/components/EventCard"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -19,10 +19,10 @@ function AllEvents() {
   const [categoryFilter, setCategoryFilter] = useState("all")
   const [locationFilter, setLocationFilter] = useState("all")
 
-  const [techEvents, setTechEvents] = useState([]);
-  const [healthEvents, setHealthEvents] = useState([]);
-  const [entertainmentEvents, setEntertainmentEvents] = useState([]);
-  const [educationEvents, setEducationEvents] = useState([]);
+  const [techEvents, setTechEvents] = useState([])
+  const [healthEvents, setHealthEvents] = useState([])
+  const [entertainmentEvents, setEntertainmentEvents] = useState([])
+  const [educationEvents, setEducationEvents] = useState([])
 
   const allEvents = useMemo(() => {
     return [
@@ -70,37 +70,38 @@ function AllEvents() {
 
   useEffect(() => {
     const fetchEvents = async () => {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       try {
-        const techRes = await axios.get("http://localhost:3000/api/users/get-tech-events");
-        setTechEvents(techRes.data.events);
+        const techRes = await axios.get(`${backendUrl}/api/users/get-tech-events`)
+        setTechEvents(techRes.data.events)
       } catch (error) {
-        console.error("Error fetching tech events:", error);
+        console.error("Error fetching tech events:", error)
       }
 
       try {
-        const healthRes = await axios.get("http://localhost:3000/api/users/get-health-events");
-        setHealthEvents(healthRes.data.events);
+        const healthRes = await axios.get(`${backendUrl}/api/users/get-health-events`)
+        setHealthEvents(healthRes.data.events)
       } catch (error) {
-        console.error("Error fetching health events:", error);
+        console.error("Error fetching health events:", error)
       }
 
       try {
-        const eduRes = await axios.get("http://localhost:3000/api/users/get-education-events");
-        setEducationEvents(eduRes.data.events);
+        const eduRes = await axios.get(`${backendUrl}/api/users/get-education-events`)
+        setEducationEvents(eduRes.data.events)
       } catch (error) {
-        console.error("Error fetching education events:", error);
+        console.error("Error fetching education events:", error)
       }
 
       try {
-        const entertainmentRes = await axios.get("http://localhost:3000/api/users/get-entertainment-events");
-        setEntertainmentEvents(entertainmentRes.data.events);
+        const entertainmentRes = await axios.get(`${backendUrl}/api/users/get-entertainment-events`)
+        setEntertainmentEvents(entertainmentRes.data.events)
       } catch (error) {
-        console.error("Error fetching entertainment events:", error);
+        console.error("Error fetching entertainment events:", error)
       }
-    };
+    }
 
-    fetchEvents();
-  }, []);
+    fetchEvents()
+  }, [])
 
   const hasActiveFilters = categoryFilter !== "all" || locationFilter !== "all"
 
@@ -108,14 +109,18 @@ function AllEvents() {
     <div className="bg-gray-900 min-h-screen text-gray-200">
       <Navbar />
 
-      {/* Filter Controls */}
-      <div className="flex flex-wrap items-center gap-4 p-4 border-b border-gray-700 bg-gray-900">
+      {/* Filters with animation */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-wrap items-center gap-4 p-4 border-b border-gray-700 bg-gray-900"
+      >
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4 text-gray-400" />
           <span className="text-sm font-medium text-gray-300">Filters:</span>
         </div>
 
-        {/* Category Filter */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="min-w-[120px] justify-between bg-transparent text-gray-200 border-gray-600 hover:border-purple-500">
@@ -134,7 +139,6 @@ function AllEvents() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Location Filter */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="min-w-[120px] justify-between bg-transparent text-gray-200 border-gray-600 hover:border-purple-500">
@@ -154,63 +158,45 @@ function AllEvents() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Reset Filters Button */}
         {hasActiveFilters && (
-          <Button variant="ghost" onClick={resetFilters} className="text-sm text-gray-400 hover:text-white">
+          <Button variant="ghost" onClick={resetFilters} className="text-sm text-gray-400 hover:text-black">
             Clear Filters
           </Button>
         )}
 
-        {/* Results Count */}
         <div className="ml-auto text-sm text-gray-400">
           {filteredEvents.length} event{filteredEvents.length !== 1 ? "s" : ""} found
         </div>
-      </div>
+      </motion.div>
 
-      {/* Events Display */}
+      {/* Events Sections */}
       <div className="min-h-[400px]">
-        {groupedEvents.Tech.length > 0 && (
-          <>
-            <h1 className="text-2xl font-bold px-4 pt-4 text-white">Tech Events</h1>
-            <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
-              {groupedEvents.Tech.map((event, index) => (
-                <EventCard key={`tech-${index}`} event={event} />
-              ))}
-            </div>
-          </>
-        )}
-
-        {groupedEvents.Entertainment.length > 0 && (
-          <>
-            <h1 className="text-2xl font-bold px-4 pt-4 text-white">Entertainment Events</h1>
-            <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
-              {groupedEvents.Entertainment.map((event, index) => (
-                <EventCard key={`entertainment-${index}`} event={event} />
-              ))}
-            </div>
-          </>
-        )}
-
-        {groupedEvents.Education.length > 0 && (
-          <>
-            <h1 className="text-2xl font-bold px-4 pt-4 text-white">Education Events</h1>
-            <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
-              {groupedEvents.Education.map((event, index) => (
-                <EventCard key={`education-${index}`} event={event} />
-              ))}
-            </div>
-          </>
-        )}
-
-        {groupedEvents.Health.length > 0 && (
-          <>
-            <h1 className="text-2xl font-bold px-4 pt-4 text-white">Health Events</h1>
-            <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
-              {groupedEvents.Health.map((event, index) => (
-                <EventCard key={`health-${index}`} event={event} />
-              ))}
-            </div>
-          </>
+        {Object.entries(groupedEvents).map(([category, events]) =>
+          events.length > 0 ? (
+            <motion.div
+              key={category}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-2xl font-bold px-4 pt-4 text-white">{category} Events</h1>
+              <motion.div
+                layout
+                className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3"
+              >
+                {events.map((event, index) => (
+                  <motion.div
+                    key={`${category}-${index}`}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                  >
+                    <EventCard event={event} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.div>
+          ) : null
         )}
       </div>
     </div>

@@ -115,7 +115,8 @@ export default function Register() {
                 role: formData.role,
             };
             try {
-                const res = await axios.post("http://localhost:3000/api/auth/register", payload, {
+                const backendUrl = import.meta.env.VITE_BACKEND_URL;
+                const res = await axios.post(`${backendUrl}/api/auth/register`, payload, {
                     withCredentials: true
                 });
 

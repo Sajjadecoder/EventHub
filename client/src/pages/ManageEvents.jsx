@@ -9,7 +9,7 @@ export default function ManageEvents() {
   const [currentAdmin, setAdmin] = useState(null)
   const [users, setUser] = useState([])
   const [events, setEvents] = useState([])
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     const fetchAdmins = async () => {
       try {
@@ -20,7 +20,7 @@ export default function ManageEvents() {
         console.error("Error fetching Current Admin:", error.message);
       }
       try {
-        const resp = await axios.get("http://localhost:3000/api/admin/admin-names")
+        const resp = await axios.get(`${backendUrl}/api/admin/admin-names`)
         setUser(resp.data.admins)
       } catch (error) {
         console.error("Error fetching admins:", error.message);
@@ -38,7 +38,7 @@ export default function ManageEvents() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/admin/get-all-events')
+        const response = await axios.get(`${backendUrl}/api/admin/get-all-events`)
         // console.log("All Events: ", response.data.events)
         const formattedEvents = response.data.events.map(event => ({
           id: event.id,
@@ -73,16 +73,13 @@ export default function ManageEvents() {
   const [selectedEvents, setSelectedEvents] = useState([])
   const [showBulkActions, setShowBulkActions] = useState(false)
 
-  // Updated categories - only 4 categories as requested
   const categories = ["Tech", "Health", "Education", "Entertainment"]
 
-  // Get user name by ID
   const getUserName = (userId) => {
     const user = users.find((u) => u.id === userId)
     return user ? user.name : "Unknown User"
   }
 
-  // Get user email by ID
   const getUserEmail = (userId) => {
     const user = users.find((u) => u.id === userId)
     return user ? user.email : "unknown@email.com"
@@ -101,7 +98,6 @@ export default function ManageEvents() {
     })
   }
 
-  // Get category color - updated for only 4 categories
   const getCategoryColor = (category) => {
     const colors = {
       Tech: "bg-blue-100 text-blue-800",
@@ -112,7 +108,6 @@ export default function ManageEvents() {
     return colors[category] || "bg-gray-100 text-gray-800"
   }
 
-  // Filter events (removed status filter)
   const filteredEvents = events.filter((event) => {
     const matchesSearch =
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -161,7 +156,7 @@ export default function ManageEvents() {
     const payload = {
       eventID: selectedEvent.id
     }
-    const res = await axios.post('http://localhost:3000/api/admin/delete-event', payload)
+    const res = await axios.post(`${backendUrl}/api/admin/delete-event`, payload)
     setEvents(events.filter((event) => event.id !== selectedEvent.id))
     setShowModal(false)
     setSelectedEvent(null)
@@ -325,41 +320,31 @@ export default function ManageEvents() {
             </div>
 
             {/* Events Table */}
-            <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+            <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50 border-b">
+                <table className="w-full text-white">
+                  <thead className="bg-gray-700 border-b border-gray-600">
                     <tr>
                       <th className="px-4 py-3 text-left">
-                        <input
-                          type="checkbox"
-                          checked={selectedEvents.length === filteredEvents.length && filteredEvents.length > 0}
-                          onChange={handleSelectAll}
-                          className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                        />
+
                       </th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Event</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Creator</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Date</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Location</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Seats Available</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Actions</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-200">Event</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-200">Creator</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-200">Date</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-200">Location</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-200">Seats Available</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-200">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-gray-700">
                     {filteredEvents.map((event) => (
-                      <tr key={event.id} className="hover:bg-gray-50">
+                      <tr key={event.id} className="hover:bg-gray-700 transition-colors duration-200">
                         <td className="px-4 py-4">
-                          <input
-                            type="checkbox"
-                            checked={selectedEvents.includes(event.id)}
-                            onChange={() => handleEventSelect(event.id)}
-                            className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                          />
+
                         </td>
                         <td className="px-4 py-4">
                           <div>
-                            <div className="font-semibold text-gray-900 mb-1">{event.title}</div>
+                            <div className="font-semibold text-white mb-1">{event.title}</div>
                             <div className="flex gap-2">
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-semibold ${getCategoryColor(event.category)}`}
@@ -371,21 +356,17 @@ export default function ManageEvents() {
                         </td>
                         <td className="px-4 py-4">
                           <div>
-                            <div className="font-medium text-gray-900">{event.createdBy || "f"}</div>
-                            <div className="text-sm text-gray-600">{event.email}</div>
+                            <div className="font-medium text-white">{event.createdBy}</div>
+                            <div className="text-sm text-gray-400">{event.email}</div>
                           </div>
                         </td>
+                        <td className="px-4 py-4 text-sm text-gray-300">{formatDate(event.date)}</td>
+                        <td className="px-4 py-4 text-sm text-gray-300">{event.location}</td>
                         <td className="px-4 py-4">
-                          <div className="text-sm text-gray-900">{formatDate(event.date)}</div>
-                        </td>
-                        <td className="px-4 py-4">
-                          <div className="text-sm text-gray-900">{event.location}</div>
-                        </td>
-                        <td className="px-4 py-4">
-                          <div className="text-sm text-gray-900">
+                          <div className="text-sm text-gray-100">
                             {event.availableSeats}/{event.totalSeats}
                           </div>
-                          <div className="w-16 bg-gray-200 rounded-full h-1 mt-1">
+                          <div className="w-16 bg-gray-600 rounded-full h-1 mt-1">
                             <div
                               className="bg-gradient-to-r from-purple-500 to-blue-500 h-1 rounded-full"
                               style={{
@@ -398,13 +379,13 @@ export default function ManageEvents() {
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleViewEvent(event)}
-                              className="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md font-medium transition-colors duration-200"
+                              className="px-3 py-1 text-xs bg-gray-600 hover:bg-gray-500 text-white rounded-md font-medium transition-colors duration-200"
                             >
                               View
                             </button>
                             <button
                               onClick={() => handleDeleteEvent(event)}
-                              className="px-3 py-1 text-xs bg-red-100 hover:bg-red-200 text-red-700 rounded-md font-medium transition-colors duration-200"
+                              className="px-3 py-1 text-xs bg-red-600 hover:bg-red-700 text-white rounded-md font-medium transition-colors duration-200"
                             >
                               Delete
                             </button>
@@ -417,32 +398,32 @@ export default function ManageEvents() {
               </div>
 
               {filteredEvents.length === 0 && (
-                <div className="text-center py-12">
+                <div className="text-center py-12 text-white bg-gray-900">
                   <div className="text-4xl mb-4">🔍</div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No Events Found</h3>
-                  <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+                  <h3 className="text-lg font-semibold mb-2">No Events Found</h3>
+                  <p className="text-gray-400">Try adjusting your search or filter criteria</p>
                 </div>
               )}
             </div>
 
             {/* Results Count */}
-            <div className="mt-4 text-sm text-gray-600 text-center">
+            <div className="mt-4 text-sm text-gray-400 text-center">
               Showing {filteredEvents.length} of {events.length} events
             </div>
 
             {/* Modal */}
             {showModal && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="bg-gray-800 text-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-600">
                   {/* Modal Header */}
-                  <div className="flex items-center justify-between p-6 border-b">
-                    <h2 className="text-xl font-bold text-gray-900">
+                  <div className="flex items-center justify-between p-6 border-b border-gray-700">
+                    <h2 className="text-xl font-bold">
                       {modalType === "view" && "Event Details"}
                       {modalType === "delete" && "Delete Event"}
                     </h2>
                     <button
                       onClick={closeModal}
-                      className="text-gray-400 hover:text-gray-600 text-2xl font-bold w-8 h-8 flex items-center justify-center"
+                      className="text-gray-400 hover:text-white text-2xl font-bold w-8 h-8 flex items-center justify-center"
                     >
                       ×
                     </button>
@@ -453,7 +434,7 @@ export default function ManageEvents() {
                     {modalType === "view" && selectedEvent && (
                       <div className="space-y-4">
                         <div>
-                          <h3 className="font-semibold text-gray-900 mb-2">{selectedEvent.title}</h3>
+                          <h3 className="font-semibold mb-2">{selectedEvent.title}</h3>
                           <div className="flex gap-2 mb-4">
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-semibold ${getCategoryColor(selectedEvent.category)}`}
@@ -463,57 +444,53 @@ export default function ManageEvents() {
                           </div>
                         </div>
 
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                          <h4 className="font-medium text-blue-900 mb-2">Event Creator</h4>
-                          <p className="text-blue-800">
+                        <div className="bg-gray-700 border border-gray-600 rounded-lg p-4">
+                          <h4 className="font-medium text-white mb-2">Event Creator</h4>
+                          <p className="text-gray-300">
                             <strong>{selectedEvent.createdBy}</strong>
                           </p>
-                          <p className="text-blue-700 text-sm">{selectedEvent.email}</p>
+                          <p className="text-gray-400 text-sm">{selectedEvent.email}</p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Date & Time</label>
-                            <p className="text-gray-900">{formatDate(selectedEvent.date)}</p>
+                            <label className="block text-sm font-medium text-gray-400 mb-1">Date & Time</label>
+                            <p>{formatDate(selectedEvent.date)}</p>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                            <p className="text-gray-900">{selectedEvent.location}</p>
+                            <label className="block text-sm font-medium text-gray-400 mb-1">Location</label>
+                            <p>{selectedEvent.location}</p>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Available Seats</label>
-                            <p className="text-gray-900">
+                            <label className="block text-sm font-medium text-gray-400 mb-1">Available Seats</label>
+                            <p>
                               {selectedEvent.availableSeats} / {selectedEvent.totalSeats}
                             </p>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Bookings</label>
-                            <p className="text-gray-900">
+                            <label className="block text-sm font-medium text-gray-400 mb-1">Bookings</label>
+                            <p>
                               {selectedEvent.totalSeats - selectedEvent.availableSeats} people registered
                             </p>
                           </div>
                         </div>
-
-
                       </div>
                     )}
-
-
 
                     {modalType === "delete" && selectedEvent && (
                       <div className="text-center">
                         <div className="text-6xl mb-4">⚠️</div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        <h3 className="text-lg font-semibold mb-2">
                           Are you sure you want to delete this event?
                         </h3>
-                        <p className="text-gray-600 mb-4">
+                        <p className="text-gray-400 mb-4">
                           <strong>"{selectedEvent.title}"</strong> created by{" "}
                           <strong>{selectedEvent.createdBy}</strong> will be permanently deleted.
                         </p>
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                          <p className="text-red-800 text-sm">
+                        <div className="bg-red-900 border border-red-700 rounded-lg p-4 mb-6">
+                          <p className="text-red-300 text-sm">
                             <strong>Warning:</strong> {selectedEvent.totalSeats - selectedEvent.availableSeats} people have
-                            already registered for this event. This action cannot be undone.
+                            already registered. This action cannot be undone.
                           </p>
                         </div>
                       </div>
@@ -521,10 +498,10 @@ export default function ManageEvents() {
                   </div>
 
                   {/* Modal Footer */}
-                  <div className="flex gap-3 p-6 border-t bg-gray-50">
+                  <div className="flex gap-3 p-6 border-t border-gray-700">
                     <button
                       onClick={closeModal}
-                      className="flex-1 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors duration-200"
+                      className="flex-1 px-4 py-2 text-white bg-gray-700 hover:bg-gray-600 rounded-lg font-medium transition-colors duration-200"
                     >
                       Cancel
                     </button>
@@ -541,6 +518,7 @@ export default function ManageEvents() {
                 </div>
               </div>
             )}
+
           </div>
         </div>
         : <UnauthorizedBox />}

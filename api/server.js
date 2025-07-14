@@ -2,19 +2,21 @@ import express from 'express';
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.routes.js' 
+import dotenv from 'dotenv'
 import adminRouter from './routes/admin.routes.js' 
 import userRouter from './routes/user.routes.js' 
-const app = express();
-const port = 3000;
 import { pool } from './db/connectDB.js';
+const app = express();
+const port = process.env.PORT || 3000;
+const frontendUrl= process.env.FRONTEND_URL
 app.use(express.json());
 app.use(cookieParser())
 app.use(cors({
-    origin: 'http://localhost:5173',  // Frontend origin
-    credentials: true,                // Needed if you're using cookies
+    origin: frontendUrl,  // Frontend origin
+    credentials: true,                
   }));
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at ${process.env.BACKEND_URL}`);
 });
 //routes 
 

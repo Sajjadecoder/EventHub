@@ -30,19 +30,19 @@ const MyEvents = () => {
           id: parsedUser.id,
         },
       };
-
-      const techRes = await axios.get("http://localhost:3000/api/admin/get-tech-events-created", config);
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const techRes = await axios.get(`${backendUrl}/api/admin/get-tech-events-created`, config);
       setTechEvents(techRes.data.events);
       console.log("tech: ",techRes.data.events)
-      const healthRes = await axios.get("http://localhost:3000/api/admin/get-health-events-created", config);
+      const healthRes = await axios.get(`${backendUrl}/api/admin/get-health-events-created`, config);
       setHealthEvents(healthRes.data.events);
       console.log("health: ",healthRes.data.events)
       
-      const eduRes = await axios.get("http://localhost:3000/api/admin/get-education-events-created", config);
+      const eduRes = await axios.get(`${backendUrl}/api/admin/get-education-events-created`, config);
       setEducationEvents(eduRes.data.events);
       console.log("edu: ",eduRes.data.events)
       
-      const entertainmentRes = await axios.get("http://localhost:3000/api/admin/get-entertainment-events-created", config);
+      const entertainmentRes = await axios.get(`${backendUrl}/api/admin/get-entertainment-events-created`, config);
       setEntertainmentEvents(entertainmentRes.data.events);
       console.log("Entert: ",entertainmentRes.data.events)
 

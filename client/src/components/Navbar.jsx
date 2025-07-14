@@ -25,9 +25,10 @@ export default function Navbar() {
   }, [])
 
   const handleLogout = async () => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
     try {
       await axios.post(
-        "http://localhost:3000/api/auth/logout",
+        `${backendUrl}/api/auth/logout`,
         {},
         {
           headers: {
@@ -55,11 +56,8 @@ export default function Navbar() {
     <nav className="bg-gray-900 shadow-lg border-b border-gray-800 sticky top-0 z-50 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo with Home Icon */}
           <div className="flex items-center space-x-4">
-            <Link to="/" className="text-2xl hover:text-purple-400 transition-all duration-200">
-              🏠
-            </Link>
+            
             <Link to="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">E</span>
@@ -70,6 +68,12 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
+            <Link
+              to="/"
+              className="text-gray-300 hover:text-purple-400 px-3 py-2 duration-200"
+            >
+              Home
+            </Link>
             <Link
               to="/events"
               className="text-gray-300 hover:text-purple-400 px-3 py-2 duration-200"
