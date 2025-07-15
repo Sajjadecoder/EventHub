@@ -72,28 +72,28 @@ function AllEvents() {
     const fetchEvents = async () => {
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
       try {
-        const techRes = await axios.get(`${backendUrl}/api/users/get-tech-events`)
+        const techRes = await axios.get(`${backendUrl}/api/users/get-events` , {params: {category: 'Tech'}})
         setTechEvents(techRes.data.events)
       } catch (error) {
         console.error("Error fetching tech events:", error)
       }
 
       try {
-        const healthRes = await axios.get(`${backendUrl}/api/users/get-health-events`)
+        const healthRes = await axios.get(`${backendUrl}/api/users/get-events`, {params: {category: 'Health'}})
         setHealthEvents(healthRes.data.events)
       } catch (error) {
         console.error("Error fetching health events:", error)
       }
 
       try {
-        const eduRes = await axios.get(`${backendUrl}/api/users/get-education-events`)
+        const eduRes = await axios.get(`${backendUrl}/api/users/get-events`, {params: {category: 'Education'}})
         setEducationEvents(eduRes.data.events)
       } catch (error) {
         console.error("Error fetching education events:", error)
       }
 
       try {
-        const entertainmentRes = await axios.get(`${backendUrl}/api/users/get-entertainment-events`)
+        const entertainmentRes = await axios.get(`${backendUrl}/api/users/get-events`, {params: {category: 'Entertainment'}})
         setEntertainmentEvents(entertainmentRes.data.events)
       } catch (error) {
         console.error("Error fetching entertainment events:", error)

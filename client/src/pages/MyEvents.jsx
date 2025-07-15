@@ -21,28 +21,32 @@ const MyEvents = () => {
       setUser(parsedUser);
       console.log("User is:", parsedUser);
 
-      const config = {
+      let config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         withCredentials: true, // Only if your backend sets/sends cookies
         params: {
           id: parsedUser.id,
+          category: 'Tech'
         },
       };
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
-      const techRes = await axios.get(`${backendUrl}/api/admin/get-tech-events-created`, config);
+      const techRes = await axios.get(`${backendUrl}/api/admin/get-events-created`, config);
       setTechEvents(techRes.data.events);
       console.log("tech: ",techRes.data.events)
-      const healthRes = await axios.get(`${backendUrl}/api/admin/get-health-events-created`, config);
+      config.params.category = 'Health'
+      const healthRes = await axios.get(`${backendUrl}/api/admin/get-events-created`, config);
       setHealthEvents(healthRes.data.events);
       console.log("health: ",healthRes.data.events)
       
-      const eduRes = await axios.get(`${backendUrl}/api/admin/get-education-events-created`, config);
+      config.params.category = 'Education'
+      const eduRes = await axios.get(`${backendUrl}/api/admin/get-events-created`, config);
       setEducationEvents(eduRes.data.events);
       console.log("edu: ",eduRes.data.events)
       
-      const entertainmentRes = await axios.get(`${backendUrl}/api/admin/get-entertainment-events-created`, config);
+      config.params.category = 'Entertainment'
+      const entertainmentRes = await axios.get(`${backendUrl}/api/admin/get-events-created`, config);
       setEntertainmentEvents(entertainmentRes.data.events);
       console.log("Entert: ",entertainmentRes.data.events)
 

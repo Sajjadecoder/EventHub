@@ -1,16 +1,17 @@
 import { pool } from "../db/connectDB.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-const getAllTechEvents = asyncHandler(async (req, res) => {
+const getEvents = asyncHandler(async (req, res) => {
+  const {category} = req.query
   const query = 'SELECT * FROM events WHERE category = $1';
-  const result = await pool.query(query, ['Tech']);
+  const result = await pool.query(query, [category]);
 
   if (!result || result.rows.length === 0) {
-    return res.status(404).json({ message: "No tech events found" });
+    return res.status(404).json({ message: `No ${category} events found` });
   }
 
   res.status(200).json({
-    message: "Tech events retrieved successfully",
+    message: `${category} events retrieved successfully`,
     events: result.rows,
   });
 });
@@ -144,4 +145,4 @@ const cancelBooking = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Booking cancelled successfully" });
 });
 
-export { getAllTechEvents, getAllEntertainmentEvents, getAllHealthEvents, getAllEducationEvents, bookEvent, getBookings,cancelBooking };
+export { getEvents, getAllEntertainmentEvents, getAllHealthEvents, getAllEducationEvents, bookEvent, getBookings,cancelBooking };

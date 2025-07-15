@@ -27,29 +27,28 @@ const createEvent = asyncHandler(async (req, res) => {
     return res.status(500).json({ message: "Event creation failed" });
   }
 
-  console.log("Here")
   res.status(201).json({
     message: "Event created successfully",
     event: newEvent,
   });
 });
-const getTechEventsCreated = asyncHandler(async (req, res) => {
-  console.log("tech controller")
-  const { id } = req.query
+const getEventsCreated = asyncHandler(async (req, res) => {
+  // console.log("tech controller")
+  const { id,category } = req.query
   console.log("user id: ", id)
   const query = 'SELECT * FROM events WHERE category = $1 AND created_by = $2';
-  const result = await pool.query(query, ['Tech', id]);
+  const result = await pool.query(query, [category, id]);
 
   if (!result || result.rows.length === 0) {
     return res.status(200).json({
-      message: "No tech events found",
+      message: `No ${category} events found`,
       events: [],
     });
   }
 
 
   res.status(200).json({
-    message: "Tech events retrieved successfully",
+    message: `${category} events retrieved successfully`,
     events: result.rows,
   });
 })
@@ -148,10 +147,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
 })
 export {
   createEvent,
-  getTechEventsCreated,
-  getHealthEventsCreated,
-  getEducationEventsCreated,
-  getEntertainmentEventsCreated,
+  getEventsCreated,
   getAdminNames,
   getAllEvents,
   deleteEvent
