@@ -36,6 +36,4 @@ app.use((error, req, res, next) => {
   });
 });
 
-export default function handler(req,res) {
-  return app(req,res)
-}
+export default app
