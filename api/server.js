@@ -18,7 +18,7 @@ app.use(cors({
 // app.listen(port, () => {
 //   console.log(`Server is running at ${process.env.BACKEND_URL}`);
 // });
-//routes 
+// routes 
 
 app.use('/api/auth',authRouter)
 app.use('/api/admin',adminRouter)

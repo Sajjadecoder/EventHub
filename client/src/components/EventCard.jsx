@@ -35,7 +35,7 @@ export default function EventCard({ event }) {
   }, [])
   useEffect(() => {
     if (user) {
-      console.log("Event card user:", user)
+      // console.log("Event card user:", user)
     }
   }, [user])
   const handleBooking = async (id) => {

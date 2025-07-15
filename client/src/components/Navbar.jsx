@@ -27,6 +27,8 @@ export default function Navbar() {
   const handleLogout = async () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     try {
+      console.log('backend url: ',backendUrl)
+      console.log('USer is ',user)
       await axios.post(
         `${backendUrl}/api/auth/logout`,
         {},

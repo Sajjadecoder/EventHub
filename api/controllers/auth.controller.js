@@ -61,6 +61,7 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = async (req, res) => {
+    console.log('inside logout')
   res.clearCookie('refreshToken', {
     httpOnly: true,
     secure: false, // set to true in production with HTTPS

@@ -2,10 +2,10 @@ import { pool } from "../db/connectDB.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const getEvents = asyncHandler(async (req, res) => {
+  console.log('inside getEvents')
   const {category} = req.query
   const query = 'SELECT * FROM events WHERE category = $1';
   const result = await pool.query(query, [category]);
-
   if (!result || result.rows.length === 0) {
     return res.status(404).json({ message: `No ${category} events found` });
   }
